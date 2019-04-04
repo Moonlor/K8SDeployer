@@ -1,23 +1,24 @@
 FROM ansible/ansible:ubuntu1604
 
 
+ADD k8s.1-12-7.tar.gz root/k8s
+ADD ./hosts root/tools/
+ADD ./auto_ssh.sh root/tools/
+
+
 RUN sudo apt-get update \
     && apt-get install -y --no-install-recommends --fix-missing tcl tk expect \
-    && git clone git clone --depth=1 https://github.com/gjmzj/kubeasz.git ~/kubeasz \
-    && mv kubeasz/* /etc/ansible
+    && git clone --depth=1 https://github.com/gjmzj/kubeasz.git ~/kubeasz \
+    && mv ~/kubeasz/* /etc/ansible \
+    && mv ~/k8s/bin/* /etc/ansible/bin \
     && rm /etc/ansible/hosts \
-    && cp ~/Ansible_Operator/hosts /etc/ansible/ \
+    && cp ~/tools/hosts /etc/ansible/ \
     && pip install --upgrade pip \
     && pip2 install ansible \
-    && pip2 install flask \
-    && pip2 install flask_httpauth \
-    && pip2 install requests \
-    && git -C /root/Ansible_Operator pull \
-    && /usr/bin/expect /root/Ansible_Operator/auto_ssh.sh root 123456 10.60.38.181 2331\
-    && chmod 777 ~/Ansible_Operator/run.sh
+    && /usr/bin/expect ~/tools/auto_ssh.sh root 123456 10.60.38.181 2331 || true\
+    && /usr/bin/expect ~/tools/auto_ssh.sh root 123456 10.60.38.181 2332 || true\
+    && /usr/bin/expect ~/tools/auto_ssh.sh root 123456 10.60.38.181 2333 || true
 
-
-CMD ["sh", "/root/Ansible_Operator/run.sh"]
 
 
 

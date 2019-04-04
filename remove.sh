@@ -1,3 +1,4 @@
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
-docker rmi ansible_operator:v2
+
+docker rmi deployer:vm
